@@ -20,6 +20,7 @@ export default function App() {
   const [name, setName] = useState("");
   const [quantity, setQuantity] = useState("");
   const [category, setCategory] = useState("");
+  const [price, setPrice] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -49,6 +50,7 @@ export default function App() {
     setName("");
     setQuantity("");
     setCategory("");
+    setPrice("");
     setEditingId(null);
   }
 
@@ -58,15 +60,19 @@ export default function App() {
     setMessage("");
 
     const amount = Number(quantity);
+    const itemPrice = Number(quantity);
 
     if (
       !name.trim() ||
       !category.trim() ||
       quantity.trim() === "" ||
       !Number.isInteger(amount) ||
-      amount < 0
+      amount < 0 ||
+      price.trim() === "" ||
+      !Number.isFinite(itemPrice) ||
+      itemPrice < 0
     ) {
-      setError("Enter a name and a whole quantity of 0 or more.");
+      setError("Enter a name, category, whole quantity and a valid price of 0 or more.");
       return;
     }
 
@@ -82,6 +88,7 @@ export default function App() {
             name: name.trim(),
             quantity: amount,
             category: category.trim(),
+            price: itemPrice,
           }),
         }
       );
@@ -109,6 +116,7 @@ export default function App() {
     setName(item.name);
     setQuantity(String(item.quantity));
     setCategory(item.category || "");
+    setPrice(item.price == null ? "" : String(item.price));
     setError("");
     setMessage("");
   }
@@ -166,6 +174,19 @@ export default function App() {
             disabled = {busy}
           />
 
+          <label htmlFor="price">Price (LKR)</label>
+          <input 
+            id = "price"
+            type = "number"
+            min = "0"
+            step = "0.01"
+            value = {price}
+            onChange={(event)=> setPrice(event.target.value)}
+            placeholder="Example: 150.00"
+            required
+            disabled = {busy}
+          />
+
           <label htmlFor="quantity">Quantity</label>
           <input
             id="quantity"
@@ -215,6 +236,7 @@ export default function App() {
                   <th>Item Name</th>
                   <th>Quantity</th>
                   <th>Category</th>
+                  <th>Price (LKR)</th>    
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -224,6 +246,7 @@ export default function App() {
                     <td>{item.name}</td>
                     <td>{item.category || "Not set"}</td>
                     <td>{item.quantity}</td>
+                    <td>{item.price == null ? "not set" : Number(item.price).toFixed(2)}</td>
                     <td>
                       <div className="actions">
                         <button

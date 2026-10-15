@@ -25,6 +25,12 @@ const itemSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    price: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+
     quantity: {
       type: Number,
       required: true,
@@ -42,7 +48,7 @@ const Item = mongoose.model("Item", itemSchema);
 
 // Check submitted data
 function validateItem(req, res, next) {
-  const { name, quantity, category } = req.body || {};
+  const { name, quantity, category, price } = req.body || {};
 
   if (typeof name !== "string" || !name.trim()) {
     return res.status(400).json({
@@ -55,9 +61,15 @@ function validateItem(req, res, next) {
       message: "Quantity must be a whole number of 0 or more",
     });
   }
-  if(typeof category !== "string" || !category.trim){
+  if(typeof category !== "string" || !category.trim()){
     return res.status(400).json({
-      massage: "Category is required"
+      message: "Category is required"
+    });
+  }
+
+  if(typeof price !== "number" || !Number.isFinite(price) || price < 0){
+    return res.status(400).json({
+      message: "price must be a number of 0 or more"
     });
   }
   next();
@@ -96,6 +108,7 @@ app.post("/api/items", validateItem, async (req, res, next) => {
       name: req.body.name.trim(),
       quantity: req.body.quantity,
       category: req.body.category.trim(),
+      price: req.body.price,
     });
 
     res.status(201).json(item);
@@ -116,6 +129,8 @@ app.put(
         {
           name: req.body.name.trim(),
           quantity: req.body.quantity,
+          category: req.body.category.trim(),
+          price: req.body.price,
         },
         {
           new: true,
