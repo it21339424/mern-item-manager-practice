@@ -1,0 +1,339 @@
+backend/server.js open කරන්න.
+itemSchema එකේ category field එකට පස්සේ මේක add කරන්න:
+price: {
+  type: Number,
+  required: true,
+  min: 0,
+},
+
+2. validateItem() function එකේ මේ line එකට price add කරන්න:
+const { name, quantity, category, price } = req.body || {};
+
+ඒ function එකේ next(); එකට කලින් මේ validation එක add කරන්න:
+if (
+  typeof price !== "number" ||
+  !Number.isFinite(price) ||
+  price < 0
+) {
+  return res.status(400).json({
+    message: "Price must be a number of 0 or more",
+  });
+}
+
+3. POST සහ PUT routes දෙකේම, මේ line එකට පස්සේ:
+category: req.body.category.trim(),
+
+මේ line එක add කරන්න:
+price: req.body.price,
+
+4. Save කර local backend එක restart කරන්න.
+Backend terminal එකේ run වෙනවා නම් Ctrl + C ඔබලා:
+npm start
+
+දැනට frontend එකෙන් Add/Update කරන්න එපා—ඊළඟ පියවරේ frontend එකටත් price එක add කරන්න ඕන.
+මේ ටික ඉවර වුණාම “hari” කියන්න.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+hari
+
+
+
+
+
+
+
+
+
+
+
+
+
+හරි 👍 දැන් frontend එකට price field එක add කරමු.
+1. frontend/src/App.jsx open කරන්න.
+අනිත් state variables ළඟ මේක add කරන්න:
+const [price, setPrice] = useState("");
+
+2. resetForm() function එක ඇතුළට add කරන්න:
+setPrice("");
+
+3. handleSubmit() function එකේ, const amount = Number(quantity); line එකට පස්සේ add කරන්න:
+const itemPrice = Number(price);
+
+එහි validation if එක සම්පූර්ණයෙන් මේකෙන් replace කරන්න:
+if (
+  !name.trim() ||
+  !category.trim() ||
+  quantity.trim() === "" ||
+  !Number.isInteger(amount) ||
+  amount < 0 ||
+  price.trim() === "" ||
+  !Number.isFinite(itemPrice) ||
+  itemPrice < 0
+) {
+  setError(
+    "Enter a name, category, whole quantity and a valid price of 0 or more."
+  );
+  return;
+}
+
+4. Request body එකේ JSON.stringify({...}) ඇතුළේ add කරන්න:
+price: itemPrice,
+
+එතකොට ඒ කොටස මෙහෙම වෙයි:
+body: JSON.stringify({
+  name: name.trim(),
+  quantity: amount,
+  category: category.trim(),
+  price: itemPrice,
+}),
+
+5. editItem(item) function එක ඇතුළට add කරන්න:
+setPrice(item.price == null ? "" : String(item.price));
+
+6. Form එකේ Quantity input එකට පස්සේ, buttons වලට කලින් add කරන්න:
+<label htmlFor="price">Price (LKR)</label>
+<input
+  id="price"
+  type="number"
+  min="0"
+  step="0.01"
+  value={price}
+  onChange={(event) => setPrice(event.target.value)}
+  placeholder="Example: 150.00"
+  required
+  disabled={busy}
+/>
+
+7. Table එකේ Quantity heading එකට පස්සේ add කරන්න:
+<th>Price (LKR)</th>
+
+<td>{item.quantity}</td> එකට පස්සේ add කරන්න:
+<td>
+  {item.price == null ? "Not set" : Number(item.price).toFixed(2)}
+</td>
+
+.gitignore එක පරීක්ෂා කරන්න
+MERN-Item-Manager ප්‍රධාන folder එකේ .gitignore file එකට මේක දා save කරන්න:
+node_modules/
+.env
+.env.*
+!.env.example
+dist/
+
+3. අලුත් VS Code terminal එකක මේ commands එකින් එක run කරන්න
+cd "E:\Prorata\WMT - SE2020\Project folder\MERN-Item-Manager"
+
+git init
+
+git add .
+
+git status
+
+මෙතැන පරීක්ෂා කරන්න: upload වෙන files ලැයිස්තුවේ backend/.env සහ node_modules තියෙන්න බැහැ. .env.example තිබීම හරි.
+ඊළඟට:
+git commit -m "Complete Item Manager with category field"
+
+git branch -M main
+
+GitHub repository page එකෙන් HTTPS repository URL එක copy කරන්න. පහළ command එකේ YOUR_USERNAME වෙනුවට ඔයාගේ GitHub username එක දාන්න:
+git remote add origin https://github.com/YOUR_USERNAME/mern-item-manager-practice.git
+
+git push -u origin main
+
+Sign-in window එකක් ආවොත් ඔයාගේ GitHub account එකෙ
+
+
+
+
+
+
+
+
+
+
+backend/server.js
+itemSchema එකේ name field එකට පස්සේ මේ field එක add කරන්න:
+category: {
+  type: String,
+  required: true,
+  trim: true,
+},
+
+validateItem function එකේ මේ line එක:
+const { name, quantity } = req.body || {};
+
+මෙහෙම වෙනස් කරන්න:
+const { name, quantity, category } = req.body || {};
+
+ඒ function එකේ next(); එකට කලින් මේ check එක add කරන්න:
+if (typeof category !== "string" || !category.trim()) {
+  return res.status(400).json({
+    message: "Category is required",
+  });
+}
+
+POST සහ PUT routes දෙකේම, මේ line එකට පස්සේ:
+quantity: req.body.quantity,
+
+මේ line එක add කරන්න:
+category: req.body.category.trim(),
+
+File එක save කරන්න. Backend terminal එකේ Ctrl + C ඔබලා නැවත run කරන්න:
+npm start
+
+2. Frontend — frontend/src/App.jsx
+quantity state එකට පස්සේ මේ state එක add කරන්න:
+const [category, setCategory] = useState("");
+
+resetForm() function එක ඇතුළේ මේක add කරන්න:
+setCategory("");
+
+handleSubmit() function එකේ validation condition එකට !category.trim() add කරන්න. සම්පූර්ණ condition එක මෙහෙම වෙන්න ඕන:
+if (
+  !name.trim() ||
+  !category.trim() ||
+  quantity.trim() === "" ||
+  !Number.isInteger(amount) ||
+  amount < 0
+) {
+  setError("Enter a name, category and a whole quantity of 0 or more.");
+  return;
+}
+
+JSON.stringify එක ඇතුළේ quantity: amount, එකට පස්සේ මේක add කරන්න:
+category: category.trim(),
+
+editItem(item) function එක ඇතුළේ මේක add කරන්න:
+setCategory(item.category || "");
+
+Form එකේ Quantity label එකට කලින් මේ input එක add කරන්න:
+<label htmlFor="category">Category</label>
+<input
+  id="category"
+  value={category}
+  onChange={(event) => setCategory(event.target.value)}
+  placeholder="Example: Stationery"
+  required
+  disabled={busy}
+/>
+
+Table heading එකේ:
+<th>Item Name</th>
+
+ඒකට පස්සේ add කරන්න:
+<th>Category</th>
+
+Table row එකේ:
+<td>{item.name}</td>
+
+ඒකට පස්සේ add කරන්න:
+<td>{item.category || "Not set"}</td>
+
+
+
+
+
+
+
+
+
+backend එක Render වල deploy කරමු.
+1. Render Dashboard open කර GitHub account එකෙන් sign in කරන්න.
+2. New + → Web Service තෝරන්න.
+3. GitHub connect කර mern-item-manager-practice repository එක තෝරන්න.
+4. මේ settings දාන්න:
+Setting			Value
+Name			item-manager-backend
+Language / Runtime	Node
+Branch			main
+Root Directory		backend
+Build Command		npm install
+Start Command		npm start
+Instance Type		Free
+
+Render එකේ Express backend එක Web Service එකක් ලෙස deploy කරනවා. Render Docs
+5. Environment Variables යටතේ මේ variable එක add කරන්න:
+Key	Value
+MONGO_URI	ඔයාගේ backend/.env එකේ තියෙන සම්පූර්ණ Atlas URI එක
+
+
+
+
+frontend එක වෙනම Render Static Site එකක් ලෙස deploy කරමු.
+1. Render dashboard එකේ New + → Static Site තෝරන්න.
+2. එකම mern-item-manager-practice GitHub repository එක තෝරන්න.
+3. මේ settings දාන්න:
+Setting			Value
+Name			item-manager-frontend
+Branch			main
+Root Directory		frontend
+Build Command		npm install && npm run build
+Publish Directory	dist
+
+මේවා Vite frontend එක Render වල deploy කරන settings. GitHub
+4. Environment Variables යටතේ මේක add කරන්න:
+Key:
+VITE_API_URL
+
+Value:
+https://mern-item-manager-practice.onrender.com
+
+
+
+
+node -v
+
+npm -v
+
+git --version
+
+මේ තුනෙන්ම version numbers පෙන්වන්න ඕන. ඊළඟට folders දෙක හදන්න:
+mkdir backend
+
+mkdir frontend
+
+VS Code එකේ වම් පැත්තේ මෙහෙම පෙනෙන්න ඕන:
+MERN-Item-Manager
+├── backend
+└── frontend
+
+
+backend
+
+package.json හදන්න:
+npm init -y
+
+2. Packages install කරන්න:
+npm install express mongoose cors dotenv
+
+3. Start command එක සකස් කරන්න:
+npm pkg set scripts.start="node server.js"
+
+4. Backend එක run කරන්න:
+npm start
+
+
+Frontend :
+cd "E:\Prorata\WMT - SE2020\Project folder\MERN-Item-Manager\frontend"
+
+2. React project එක හදන්න:
+npm create vite@latest . -- --template react
+
+Install කරන්න අහනවා නම් y දී Enter ඔබන්න. වෙනත් optional experimental features අහනවා නම් No තෝරන්න.
+3. Packages install කරන්න:
+npm install
+
+4. Frontend එක run කරන්න:
+npm run dev
